@@ -1,5 +1,9 @@
 Rest Service developed will search for the given input in all the files except PDF & EXCEL under the Configured directory and its sub folders.
 
+Java Version used :  1.8.0_162
+
+Maven version used : Apache Maven 3.2.1
+
 LOMBOK is used for logging the debug and error statements. LOMBOK provides slf4j implementation inbuilt.
 
 Start the embedded Tomcat by right clicking on the project -> Run As -> Spring Boot App option.
