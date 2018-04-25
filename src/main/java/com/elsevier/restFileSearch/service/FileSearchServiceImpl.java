@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import com.elsevier.restFileSearch.SearchOutput.SearchOutput;
 import com.elsevier.restFileSearch.exception.ErrorFileException;
 import com.elsevier.restFileSearch.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -37,32 +38,39 @@ public class FileSearchServiceImpl implements FileSearchService {
    * @throws ErrorFileException if the configured directory is NOT a file or Directory.
    */
   @Override
-  public List<String> searchFileSystem(String input) {
+  public List<SearchOutput> searchFileSystem(List<String> inputList) {
 
+    List<SearchOutput> searchOutputList = new ArrayList<>(); 
     List<String> matchFilesList = null;
 
     File file = new File(configuredDirectory);
     log.debug(String.format("Absolute path of search directory : %s ", file.getAbsolutePath()));
     
+    List<File> filesList = listOfAllFiles(file);
+
     if (file.exists()) {
       log.debug(String.format("Searching the directory : %s ", configuredDirectory));
 
-      List<File> filesList = listOfAllFiles(file);
-
-      matchFilesList = filesList.stream().filter(f -> matchFound(f, input))
-          .map(f -> f.getAbsolutePath()).collect(Collectors.toList());
-
-      if (matchFilesList.isEmpty()) {
-        throw new NotFoundException(
-            String.format("There are NO files matching the input %s under the directory %s", input,
-                configuredDirectory));
+      for (String input : inputList) {
+        log.debug(String.format("Input String to search : %s", input));
+        
+        matchFilesList = new ArrayList<>();
+        matchFilesList = filesList.stream().filter(f -> matchFound(f, input))
+            .map(f -> f.getAbsolutePath()).collect(Collectors.toList());
+  
+        if (matchFilesList != null && matchFilesList.isEmpty()) {
+          log.debug(String.format("There are NO files matching the input %s under the directory %s",
+              input, configuredDirectory));
+        }
+        
+        searchOutputList.add(new SearchOutput(input, matchFilesList));
       }
     } else {
       throw new ErrorFileException(
           String.format("%s is NOT a File or Directory", configuredDirectory));
     }
 
-    return matchFilesList;
+    return searchOutputList;
   }
 
   /**

@@ -4,6 +4,7 @@
 package com.elsevier.restFileSearch.service;
 
 import java.util.List;
+import com.elsevier.restFileSearch.SearchOutput.SearchOutput;
 
 /**
  * @author Santosh Kumar G.
@@ -11,5 +12,6 @@ import java.util.List;
  */
 public interface FileSearchService {
 	
-	public List<String> searchFileSystem(String searchInput);
+	public List<SearchOutput> searchFileSystem(List<String> inputList);
+	
 }
