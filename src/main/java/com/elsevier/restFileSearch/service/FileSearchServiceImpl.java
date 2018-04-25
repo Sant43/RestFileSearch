@@ -61,6 +61,8 @@ public class FileSearchServiceImpl implements FileSearchService {
         if (matchFilesList != null && matchFilesList.isEmpty()) {
           log.debug(String.format("There are NO files matching the input %s under the directory %s",
               input, configuredDirectory));
+        } else if(matchFilesList != null) {
+          log.debug(String.format("Found files which contain the input - %s : %s",input, matchFilesList.toString()));
         }
         
         searchOutputList.add(new SearchOutput(input, matchFilesList));
